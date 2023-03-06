@@ -1,17 +1,35 @@
 <?php
 
-class FinalResult {
-    function results($f) {
+class FinalResult
+{
+    function results($f)
+    {
         $d = fopen($f, "r");
         $h = fgetcsv($d);
         $rcs = [];
-        while(!feof($d)) {
-            $r = fgetcsv($d);
-            if(count($r) == 16) {
-                $amt = !$r[8] || $r[8] == "0" ? 0 : (float) $r[8];
-                $ban = !$r[6] ? "Bank account number missing" : (int) $r[6];
-                $bac = !$r[2] ? "Bank branch code missing" : $r[2];
-                $e2e = !$r[10] && !$r[11] ? "End to end id missing" : $r[10] . $r[11];
+        while (!feof($d)) {
+            // $r = fgetcsv($d);
+            if (count($r) == 16) {
+                if (empty($r[8]) || $r[8] == "0") {
+                    $amt = 0;
+                } else {
+                    $amt = (float) $r[8];
+                }
+                if (empty($r[6]) || $r[6] == "0") {
+                    $ban = "Bank account number missing";
+                } else {
+                    $ban = (int) $r[6];
+                }
+                if (empty($r[2])) {
+                    $bac = "Bank branch code missing";
+                } else {
+                    $bac = $r[2];
+                }
+                if (empty($r[10]) && empty($r[11])) {
+                    $e2e = "End to end id missing";
+                } else {
+                    $e2e = $r[10] . $r[11];
+                }
                 $rcd = [
                     "amount" => [
                         "currency" => $h[0],
@@ -36,5 +54,3 @@ class FinalResult {
         ];
     }
 }
-
-?>
